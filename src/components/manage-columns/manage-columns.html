@@ -1,0 +1,9 @@
+<div style="">
+	<div ng-repeat="header in heads" ng-if="header.title">
+		<label class="checkbox">
+			<input type="checkbox" ng-model="header.value" ng-change="updateColumns(header.id)">
+			{{header.title}}
+		</label>
+	</div>
+</div>
+

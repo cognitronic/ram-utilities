@@ -1,0 +1,13 @@
+{
+	"name": "curaspan-ui",
+	"version": "0.0.1",
+	"dependencies": {
+		"angular":          	"1.2.19",
+		"angular-ui-router":    "0.2.10",
+		"angular-animate": 		"1.2.16",
+		"angular-mocks":    	"1.2.16",
+		"jquery":           	"1.9.1",
+		"lodash":       		"2.4.1"
+	},
+	"analytics": false
+}
