@@ -111,7 +111,7 @@ module.exports = function (grunt) {
 					{
 						expand: true,
 						cwd: 'dist/',
-						src: ['curaspan-ui-0.0.1.css', 'curaspan-ui-0.0.1.min.css'],
+						src: ['ram-utilities-0.0.1.css', 'ram-utilities-0.0.1.min.css'],
 						dest: '../../CoordinatedCare/web/src/main/scripts/node/referral/common/css/'
 					}
 				]
