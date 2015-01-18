@@ -255,13 +255,16 @@
 				data: data,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
 						_defaultSuccessFunction(data, status, headers, config);
 					}
 					else {
-						successFunction(data, status, headers, config);
+						successFunction({
+							success: true,
+							data: data
+						}, status, headers, config);
 					}
 				})
 				.error(function (data, status, headers, config) {

@@ -38,9 +38,10 @@ describe('RestService', function() {
 		$httpBackend.expectPOST('http://ram-utilities.com/jasmine/test/2015', {data: 'Test POST'})
 			.respond(200, {message: 'POST Successful', id: 0});
 
-		var success = function(data){
-			expect(data).toBeTruthy();
-			expect(data.message).toBe('POST Successful');
+		var success = function(response){
+			dump(response);
+			expect(response).toBeTruthy();
+			expect(response.success).toBe(true);
 		};
 
 		restService.postData(url, argList, null, {data: 'Test POST'}, success, null, null, null);
