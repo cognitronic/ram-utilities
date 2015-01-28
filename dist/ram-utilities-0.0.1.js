@@ -1553,7 +1553,7 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 (function(){ 'use strict';
 
 	angular.module('ram-utilities.ui.scrollable-table',[])
-		.directive('csScrollableTable', ['$timeout', '$q', '$parse', function($timeout, $q, $parse) {
+		.directive('ramScrollableTable', ['$timeout', '$q', '$parse', function($timeout, $q, $parse) {
 			return {
 				transclude: true,
 				restrict: 'A',
@@ -2384,7 +2384,6 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 		 * @function putPostData
 		 */
 		var _putPostData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
-
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -2400,13 +2399,16 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 				data: data,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
 						_defaultSuccessFunction(data, status, headers, config);
 					}
 					else {
-						successFunction(data, status, headers, config);
+						successFunction({
+							success: true,
+							data: postData
+						}, status, headers, config);
 					}
 				})
 				.error(function (data, status, headers, config) {
@@ -2434,8 +2436,9 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 		 * @memberOf RestService
 		 * @function postData
 		 */
-		var _postData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
+		var _postData = function(url, urlReplaceList, params, data, errorMsg, errorFunction, config) {
 
+			var deferred = $q.defer();
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -2453,24 +2456,13 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 			})
 				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
-					}
-					else {
-						successFunction({
-							success: true,
-							data: data
-						}, status, headers, config);
-					}
+					deferred.resolve(postData);
 				})
-				.error(function (data, status, headers, config) {
+				.error(function (postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if(status === 401){
-						_showSessionTimedOut();
-					}else if (status !== 0){
-						_processError(data, status, headers, config, errorMsg, errorFunction);
-					}
+					deferred.reject(postData);
 				});
+			return deferred.promise;
 		};
 
 		/**

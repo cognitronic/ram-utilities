@@ -188,7 +188,6 @@
 		 * @function putPostData
 		 */
 		var _putPostData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
-
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -204,13 +203,16 @@
 				data: data,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
 						_defaultSuccessFunction(data, status, headers, config);
 					}
 					else {
-						successFunction(data, status, headers, config);
+						successFunction({
+							success: true,
+							data: postData
+						}, status, headers, config);
 					}
 				})
 				.error(function (data, status, headers, config) {
@@ -238,8 +240,9 @@
 		 * @memberOf RestService
 		 * @function postData
 		 */
-		var _postData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
+		var _postData = function(url, urlReplaceList, params, data, errorMsg, errorFunction, config) {
 
+			var deferred = $q.defer();
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -257,24 +260,13 @@
 			})
 				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
-					}
-					else {
-						successFunction({
-							success: true,
-							data: data
-						}, status, headers, config);
-					}
+					deferred.resolve(postData);
 				})
-				.error(function (data, status, headers, config) {
+				.error(function (postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if(status === 401){
-						_showSessionTimedOut();
-					}else if (status !== 0){
-						_processError(data, status, headers, config, errorMsg, errorFunction);
-					}
+					deferred.reject(postData);
 				});
+			return deferred.promise;
 		};
 
 		/**

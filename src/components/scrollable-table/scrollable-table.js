@@ -5,7 +5,7 @@
 (function(){ 'use strict';
 
 	angular.module('ram-utilities.ui.scrollable-table',[])
-		.directive('csScrollableTable', ['$timeout', '$q', '$parse', function($timeout, $q, $parse) {
+		.directive('ramScrollableTable', ['$timeout', '$q', '$parse', function($timeout, $q, $parse) {
 			return {
 				transclude: true,
 				restrict: 'A',
