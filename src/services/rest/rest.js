@@ -65,8 +65,8 @@
 		 * @memberOf RestService
 		 * @private
 		 */
-		var _executeHttpRequest = function(method, url, urlReplaceList, params, successFunction,  errorMsg, errorFunction, config) {
-
+		var _executeHttpRequest = function(method, url, urlReplaceList, params, config) {
+			var deferred = $q.defer();
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -80,23 +80,15 @@
 				params: params,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(getData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
-					}
-					else {
-						successFunction(data, status, headers, config);
-					}
+					deferred.resolve(getData);
 				})
 				.error(function (data, status, headers, config) {
 					$rootScope.showLoader = false;
-					if(status === 401){
-						_showSessionTimedOut();
-					}else if (status !== 0){
-						_processError(data, status, headers, config, errorMsg, errorFunction);
-					}
+					deferred.resolve(getData);
 				});
+			return deferred.promise;
 		};
 
 		var _defaultSuccessFunction = function(data, status, headers, config) {
@@ -129,9 +121,9 @@
 		 * @memberOf RestService
 		 * @function getData
 		 */
-		var _getData = function(url, urlReplaceList, params, successFunction, errorMsg, errorFunction, config) {
+		var _getData = function(url, urlReplaceList, params, config) {
 
-			_executeHttpRequest('GET', url, urlReplaceList, params, successFunction, errorMsg, errorFunction, config);
+			_executeHttpRequest('GET', url, urlReplaceList, params, config);
 		};
 
 		/**
@@ -240,7 +232,7 @@
 		 * @memberOf RestService
 		 * @function postData
 		 */
-		var _postData = function(url, urlReplaceList, params, data, errorMsg, errorFunction, config) {
+		var _postData = function(url, urlReplaceList, params, data, config) {
 
 			var deferred = $q.defer();
 			if(config && config.hasOwnProperty('showLoader')){

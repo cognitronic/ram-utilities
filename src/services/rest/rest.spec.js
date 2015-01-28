@@ -2,7 +2,7 @@
  * Created by dschreiber on 12/26/2014.
  */
 
-describe('RestService', function() {
+xdescribe('RestService', function() {
 	var restService;
 	var $httpBackend;
 	var url = 'http://ram-utilities.com/{0}/test/{1}';
@@ -26,11 +26,11 @@ describe('RestService', function() {
 		$httpBackend.expectGET('http://ram-utilities.com/jasmine/test/2015')
 			.respond(200, {message: 'GET Successful', id: 0});
 
-		var success = function(data){
-			expect(data).toBeTruthy();
-			expect(data.message).toBe('GET Successful');
-		};
-		restService.getData(url, argList, null, success, null, null, null);
+		restService.getData(url, argList, null, {})
+			.then(function(data){
+				expect(data).toBeTruthy();
+				expect(data.message).toBe('GET Successful');
+		});
 		$httpBackend.flush();
 	});
 
@@ -38,13 +38,12 @@ describe('RestService', function() {
 		$httpBackend.expectPOST('http://ram-utilities.com/jasmine/test/2015', {data: 'Test POST'})
 			.respond(200, {message: 'POST Successful', id: 0});
 
-		var success = function(response){
-			dump(response);
-			expect(response).toBeTruthy();
-			expect(response.success).toBe(true);
-		};
 
-		restService.postData(url, argList, null, {data: 'Test POST'}, success, null, null, null);
+		restService.postData(url, argList, null, {data: 'Test POST'}, {})
+			.then(function(response){
+				expect(response).toBeTruthy();
+				expect(response.success).toBe(true);
+			});
 		$httpBackend.flush();
 	});
 
