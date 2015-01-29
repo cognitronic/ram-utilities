@@ -65,8 +65,8 @@
 		 * @memberOf RestService
 		 * @private
 		 */
-		var _executeHttpRequest = function(method, url, urlReplaceList, params, config) {
-			var deferred = $q.defer();
+		var _executeHttpRequest = function(method, url, urlReplaceList, params, successFunction,  errorMsg, errorFunction, config) {
+
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -80,15 +80,23 @@
 				params: params,
 				cache: false
 			})
-				.success(function(getData, status, headers, config) {
+				.success(function(data, status, headers, config) {
 					$rootScope.showLoader = false;
-					deferred.resolve(getData);
+					if (successFunction === undefined) {
+						_defaultSuccessFunction(data, status, headers, config);
+					}
+					else {
+						successFunction(data, status, headers, config);
+					}
 				})
 				.error(function (data, status, headers, config) {
 					$rootScope.showLoader = false;
-					deferred.resolve(getData);
+					if(status === 401){
+						_showSessionTimedOut();
+					}else if (status !== 0){
+						_processError(data, status, headers, config, errorMsg, errorFunction);
+					}
 				});
-			return deferred.promise;
 		};
 
 		var _defaultSuccessFunction = function(data, status, headers, config) {
@@ -121,9 +129,9 @@
 		 * @memberOf RestService
 		 * @function getData
 		 */
-		var _getData = function(url, urlReplaceList, params, config) {
+		var _getData = function(url, urlReplaceList, params, successFunction, errorMsg, errorFunction, config) {
 
-			_executeHttpRequest('GET', url, urlReplaceList, params, config);
+			_executeHttpRequest('GET', url, urlReplaceList, params, successFunction, errorMsg, errorFunction, config);
 		};
 
 		/**
@@ -180,6 +188,7 @@
 		 * @function putPostData
 		 */
 		var _putPostData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
+
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -195,16 +204,13 @@
 				data: data,
 				cache: false
 			})
-				.success(function(postData, status, headers, config) {
+				.success(function(data, status, headers, config) {
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
 						_defaultSuccessFunction(data, status, headers, config);
 					}
 					else {
-						successFunction({
-							success: true,
-							data: postData
-						}, status, headers, config);
+						successFunction(data, status, headers, config);
 					}
 				})
 				.error(function (data, status, headers, config) {
@@ -232,9 +238,8 @@
 		 * @memberOf RestService
 		 * @function postData
 		 */
-		var _postData = function(url, urlReplaceList, params, data, config) {
+		var _postData = function(url, urlReplaceList, params, data, successFunction,  errorMsg, errorFunction, config) {
 
-			var deferred = $q.defer();
 			if(config && config.hasOwnProperty('showLoader')){
 				$rootScope.showLoader = config.showLoader;
 			}
@@ -252,13 +257,21 @@
 			})
 				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					deferred.resolve(postData);
+					if (successFunction === undefined) {
+						_defaultSuccessFunction(postData, status, headers, config);
+					}
+					else {
+						successFunction(postData, status, headers, config);
+					}
 				})
 				.error(function (postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					deferred.reject(postData);
+					if(status === 401){
+						_showSessionTimedOut();
+					}else if (status !== 0){
+						_processError(postData, status, headers, config, errorMsg, errorFunction);
+					}
 				});
-			return deferred.promise;
 		};
 
 		/**
