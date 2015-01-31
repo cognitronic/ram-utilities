@@ -2400,21 +2400,21 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 				data: data,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
+						_defaultSuccessFunction(postData, status, headers, config);
 					}
 					else {
 						successFunction(data, status, headers, config);
 					}
 				})
-				.error(function (data, status, headers, config) {
+				.error(function (postData, status, headers, config) {
 					$rootScope.showLoader = false;
 					if(status === 401){
 						_showSessionTimedOut();
 					}else if (status !== 0){
-						_processError(data, status, headers, config, errorMsg, errorFunction);
+						_processError(postData, status, headers, config, errorMsg, errorFunction);
 					}
 				});
 		};
