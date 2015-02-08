@@ -2406,11 +2406,15 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 			})
 				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(postData, status, headers, config);
-					}
-					else {
-						successFunction(data, status, headers, config);
+					if(postData.isAuthenticated !== undefined && !postData.isAuthenticated){
+						$state.go('login');
+					} else {
+						if (successFunction === undefined) {
+							_defaultSuccessFunction(postData, status, headers, config);
+						}
+						else {
+							successFunction(data, status, headers, config);
+						}
 					}
 				})
 				.error(function (postData, status, headers, config) {
@@ -2456,13 +2460,16 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 				cache: false
 			})
 				.success(function(postData, status, headers, config) {
-
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(postData, status, headers, config);
-					}
-					else {
-						successFunction(postData, status, headers, config);
+					if(postData.isAuthenticated !== undefined && !postData.isAuthenticated){
+						$state.go('login');
+					} else {
+						if (successFunction === undefined) {
+							_defaultSuccessFunction(postData, status, headers, config);
+						}
+						else {
+							successFunction(postData, status, headers, config);
+						}
 					}
 				})
 				.error(function (postData, status, headers, config) {
@@ -2508,13 +2515,17 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 				headers: headers,
 				transformRequest: transformRequest
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(postData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
-					}
-					else {
-						successFunction(data, status, headers, config);
+					if(postData.isAuthenticated !== undefined && !postData.isAuthenticated){
+						$state.go('login');
+					} else {
+						if (successFunction === undefined) {
+							_defaultSuccessFunction(postData, status, headers, config);
+						}
+						else {
+							successFunction(postData, status, headers, config);
+						}
 					}
 				})
 				.error(function (data, status, headers, config) {
