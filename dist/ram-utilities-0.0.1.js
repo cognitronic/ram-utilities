@@ -2278,9 +2278,7 @@ angular.module("template/dialog/dialog-notify.html", []).run(["$templateCache", 
 			})
 				.success(function(responseData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if(responseData.isAuthenticated && responseData.isAuthenticated === false){
-						dump('response ', responseData);
-						dump('data ', data);
+					if(responseData.isAuthenticated !== undefined && !responseData.isAuthenticated){
 						$state.go('login');
 					} else{
 						if (successFunction === undefined) {
