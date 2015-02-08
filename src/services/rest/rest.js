@@ -9,7 +9,7 @@
 	 * @classdesc Rest service is a collection of utility functions that wrap the Angular $http service and make REST calls easier to work with.
 	 * @constructor RestService
 	 */
-	var RestService = function($http, $q, AlertService, $window, $location, $rootScope, EventService){
+	var RestService = function($http, $q, AlertService, $window, $location, $rootScope, $state){
 
 		var _sessionTimedOutFunction;
 
@@ -80,13 +80,19 @@
 				params: params,
 				cache: false
 			})
-				.success(function(data, status, headers, config) {
+				.success(function(responseData, status, headers, config) {
 					$rootScope.showLoader = false;
-					if (successFunction === undefined) {
-						_defaultSuccessFunction(data, status, headers, config);
-					}
-					else {
-						successFunction(data, status, headers, config);
+					if(responseData.isAuthenticated && responseData.isAuthenticated === false){
+						dump('response ', responseData);
+						dump('data ', data);
+						$state.go('login');
+					} else{
+						if (successFunction === undefined) {
+							_defaultSuccessFunction(responseData, status, headers, config);
+						}
+						else {
+							successFunction(responseData, status, headers, config);
+						}
 					}
 				})
 				.error(function (data, status, headers, config) {
@@ -256,6 +262,7 @@
 				cache: false
 			})
 				.success(function(postData, status, headers, config) {
+
 					$rootScope.showLoader = false;
 					if (successFunction === undefined) {
 						_defaultSuccessFunction(postData, status, headers, config);
@@ -338,5 +345,5 @@
 	};
 
 
-	angular.module('ram-utilities.ui.rest.service', ['ram-utilities.ui.alert.service', 'ram-utilities.ui.event-bus.service']).factory('RestService', ['$http', '$q', 'AlertService','$window','$location', '$rootScope', 'EventService', RestService]);
+	angular.module('ram-utilities.ui.rest.service', ['ram-utilities.ui.alert.service', 'ram-utilities.ui.event-bus.service']).factory('RestService', ['$http', '$q', 'AlertService','$window','$location', '$rootScope', '$state', RestService]);
 })();

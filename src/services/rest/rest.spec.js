@@ -4,7 +4,7 @@
 
 describe('RestService', function() {
 	var restService;
-	var $httpBackend;
+	var $httpBackend, $state;
 	var url = 'http://ram-utilities.com/{0}/test/{1}';
 	var argList = ['jasmine', 2015];
 
@@ -12,9 +12,10 @@ describe('RestService', function() {
 	beforeEach(module('ram-utilities.ui.rest.service'));
 
 	// Injection of dependencies
-	beforeEach(inject(function(_RestService_, _$httpBackend_) {
+	beforeEach(inject(function(_RestService_, _$httpBackend_, _$state_) {
 		restService = _RestService_;
 		$httpBackend = _$httpBackend_;
+		$state = _$state_;
 	}));
 
 	afterEach(function() {
@@ -24,7 +25,7 @@ describe('RestService', function() {
 
 	it('should send an HTTP GET request', function(){
 		$httpBackend.expectGET('http://ram-utilities.com/jasmine/test/2015')
-			.respond(200, {message: 'GET Successful', id: 0});
+			.respond(200, {message: 'GET Successful', id: 0, isAuthenticated: true});
 
 		var success = function(data){
 			expect(data).toBeTruthy();

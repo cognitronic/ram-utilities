@@ -98,24 +98,6 @@ module.exports = function (grunt) {
 			options: {
 				destination: 'doc'
 			}
-		},
-		copy: {
-			distToCCare: {
-				files: [
-					{
-						expand: true,
-						cwd: 'dist/',
-						src: ['*'],
-						dest: '../../CoordinatedCare/web/src/main/scripts/node/uicore/'
-					},
-					{
-						expand: true,
-						cwd: 'dist/',
-						src: ['ram-utilities-0.0.1.css', 'ram-utilities-0.0.1.min.css'],
-						dest: '../../CoordinatedCare/web/src/main/scripts/node/referral/common/css/'
-					}
-				]
-			}
 		}
 	});
 
@@ -142,7 +124,14 @@ module.exports = function (grunt) {
 			'uglify',
 			'cssmin:dist_css',
 			'karma:minified',
-			'jsdoc',
-			'copy:distToCCare'
+			'jsdoc'
+		]);
+	grunt.registerTask('build_no_tests',
+		[
+			'jshint',
+			'concat',
+			'concat:dist_css',
+			'uglify',
+			'cssmin:dist_css'
 		]);
 };
